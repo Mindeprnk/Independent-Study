@@ -11,7 +11,7 @@ namespace OnlineBooksStore.Controllers
 {
     public class CustomersController : Controller
     {
-        private MyDbContext _context;
+        private readonly MyDbContext _context;
 
         public CustomersController()
         {
@@ -31,17 +31,29 @@ namespace OnlineBooksStore.Controllers
 
         public ActionResult New()
         {
+            
             var membershiptype = _context.MembershipTypes.ToList();
             var ViewModel = new CustomerFormViewModel
             {
+                Customer = new Customer(),
                 MembershipTypes = membershiptype
             };
             return View("CustomerForm", ViewModel);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Save(Customer customer)
         {
+            if (!ModelState.IsValid)
+            {
+                var viewModel = new CustomerFormViewModel
+                {
+                    Customer = customer,
+                    MembershipTypes = _context.MembershipTypes.ToList()
+                };
+                return View("CustomerForm",viewModel);
+            }
             if (customer.Id == 0)
                 _context.Customers.Add(customer);
             else

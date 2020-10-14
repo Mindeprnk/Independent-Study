@@ -13,7 +13,7 @@ namespace OnlineBooksStore.Controllers
 {
     public class BooksController : Controller
     {
-        private MyDbContext _context;
+        private readonly MyDbContext _context;
 
         public BooksController()
         {
@@ -51,10 +51,9 @@ namespace OnlineBooksStore.Controllers
                 new Customer{ Name="Vinay"}
             };
 
-            var viewModel = new BookFormViewModel
+            var viewModel = new BookFormViewModel(book)
             {
-                Book = book,
-                Customers = customers
+               Customers = customers
 
             };
             return View(viewModel);
@@ -63,8 +62,9 @@ namespace OnlineBooksStore.Controllers
         public ViewResult New()
         {
             var genretype = _context.Genres.ToList();
+            
 
-            var ViewModel = new BookFormViewModel
+            var ViewModel = new BookFormViewModel()
             {
                 Genres = genretype
             };
@@ -80,7 +80,6 @@ namespace OnlineBooksStore.Controllers
                 return HttpNotFound();
             var viewModel = new BookFormViewModel
             {
-                Book = book,
                 Genres = _context.Genres.ToList()
             };
 
@@ -89,8 +88,17 @@ namespace OnlineBooksStore.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Save(Book book)
         {
+            if (!ModelState.IsValid)
+            {
+                var bookFormViewModel = new BookFormViewModel(book)
+                {
+                    Genres = _context.Genres.ToList()
+                };
+                return View("NewBook",bookFormViewModel);
+            }
             if (book.Id == 0)
             {
                 book.DateAdded = DateTime.Now;
