@@ -22,9 +22,6 @@ namespace OnlineBooksStore.Models
         [Display(Name ="Membership Type")]
         public byte MembershipTypeId { get; set; }
            
-        //This Birthdate is not added in the Details View as there is null reference exception occuring.
-        public DateTime? Birthdate { get; set; }
-
         [Display(Name ="Date of Birth")]
         [Min18YearsIfCustomer]
         public DateTime? DateOfBirth { get; set; }
