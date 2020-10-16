@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using AutoMapper;
+using OnlineBooksStore.Dtos;
 using OnlineBooksStore.Models;
 
 namespace OnlineBooksStore.Controllers.API
@@ -17,36 +19,43 @@ namespace OnlineBooksStore.Controllers.API
         }
 
         //GET /api/customers
-        public IEnumerable<Customer> GetCustomers()
+        public IEnumerable<CustomerDto> GetCustomers()
         {
-           return _context.Customers.ToList();
+           return _context.Customers.ToList().Select(Mapper.Map<Customer,CustomerDto>);
         }
 
         //GET /api/customers/1
-        public Customer GetCustomers(int id)
+        public IHttpActionResult GetCustomers(int id)
         {
             var customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+
             if (customer == null)
-                throw new HttpResponseException(HttpStatusCode.NotFound);
-            return customer;
+                return NotFound();
+
+            return Ok(Mapper.Map<Customer,CustomerDto>(customer));
         }
 
         //POST /api/customers
         [HttpPost]
-        public Customer CreateCustomer(Customer customer)
+        public IHttpActionResult CreateCustomer(CustomerDto customerDto)
         {
-            if(!ModelState.IsValid)
-                throw new HttpResponseException(HttpStatusCode.BadRequest);
+            if (!ModelState.IsValid)
+                //throw new HttpResponseException(HttpStatusCode.BadRequest);
+                return BadRequest();
+
+            var customer = Mapper.Map<CustomerDto, Customer>(customerDto);
             _context.Customers.Add(customer);
             _context.SaveChanges();
 
-            return customer;
+            customerDto.Id = customer.Id; 
+
+            return Created( new Uri(Request.RequestUri+"/"+customer.Id),customerDto);
 
         }
 
         //PUT /api/customers/1
         [HttpPut]
-        public Customer UpdateCustomer(int id,Customer customer)
+        public void UpdateCustomer(int id,Customer customerDto)
         {
             if (!ModelState.IsValid)
                 throw new HttpResponseException(HttpStatusCode.BadRequest);
@@ -56,14 +65,15 @@ namespace OnlineBooksStore.Controllers.API
             if (customerinDb == null)
                 throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            customerinDb.Name = customer.Name;
-            customerinDb.DateOfBirth = customer.DateOfBirth;
-            customerinDb.IsSubscribedToNewsLetter = customer.IsSubscribedToNewsLetter;
-            customerinDb.MembershipTypeId = customer.MembershipTypeId;
+             Mapper.Map(customerDto, customerinDb);
+            //customerinDb.Name = customerDto.Name;
+            //customerinDb.DateOfBirth = customerDto.DateOfBirth;
+            //customerinDb.IsSubscribedToNewsLetter = customerDto.IsSubscribedToNewsLetter;
+            //customerinDb.MembershipTypeId = customerDto.MembershipTypeId;
 
             _context.SaveChanges();
 
-            return customerinDb;
+            
         }
 
         //DELETE /api/customers/1

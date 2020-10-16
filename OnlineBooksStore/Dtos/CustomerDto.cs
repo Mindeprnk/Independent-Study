@@ -19,7 +19,7 @@ namespace OnlineBooksStore.Dtos
         //MembershipType value
         public byte MembershipTypeId { get; set; }
 
-        [Min18YearsIfCustomer]
+        //[Min18YearsIfCustomer]
         public DateTime? DateOfBirth { get; set; }
     }
 }
