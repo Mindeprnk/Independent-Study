@@ -15,6 +15,8 @@ namespace OnlineBooksStore.App_Start
             //Mappers for Domain to Dto objects
             Mapper.CreateMap<Customer, CustomerDto>();
             Mapper.CreateMap<Book, BookDto>();
+            Mapper.CreateMap<MembershipType, MembershipTypeDto>();
+            Mapper.CreateMap<Genre, GenreDto>();
 
             //Mappers for Dto to Domain Objects
             Mapper.CreateMap<BookDto, Book>().

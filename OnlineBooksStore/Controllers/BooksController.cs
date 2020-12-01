@@ -25,9 +25,10 @@ namespace OnlineBooksStore.Controllers
         } 
         public ViewResult Index()
         {
-            var books = _context.Book.Include(b => b.Genre).ToList();
+            //var books = _context.Book.Include(b => b.Genre).ToList();
 
-            return View(books);
+            //return View(books);
+            return View();
         }
 
 

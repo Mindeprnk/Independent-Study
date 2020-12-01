@@ -14,16 +14,70 @@
     <thead>
         <tr>
             <th>Books</th>
+            <th>Genre</th>
+            <th>Delete</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var book in Model)
+        @*@foreach (var book in Model)
         {
             <tr>
                 <td>@Html.ActionLink(book.Name, "Edit", "Books", new { id = book.Id }, null)</td>
                 <td>@book.Genre.Name</td>
-            </tr>
-        }
+           </tr>
+        }*@
 
     </tbody>
 </table>
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            var table = $("#customers").DataTable(
+                {
+                    ajax: {
+                        url: "api/books",
+                        dataSrc: ""
+                    },
+                    columns: [
+                        {
+                            data: "name",
+                            render: function (data, type, book) {
+                                return "<a href='/books/edit/" + book.id + "'>" + book.name + "</a>";
+                            }
+                        },
+                        {
+                            data: "name"
+                        },
+                        {
+                            data: "id",
+                            render: function (data) {
+                                return "<button class='btn-link js-delete' data-movie-id=" + data + ">Delete</button>";
+                            }
+                        }
+                    ]
+                });
+
+            $("#books").on("click", ".js-delete", function () {
+                var button = $(this);
+
+
+                bootbox.confirm("Are you sure you want to delete this Book?", function (result) {
+                    if (result) {
+                        $.ajax({
+                            url: "/api/books/" + button.attr("data-book-id"),
+                            method: "DELETE",
+                            success: function () {
+                                table.row(button.parents("tr")).remove().draw();
+                            }
+                        });
+                    }
+
+                });
+
+            });
+        });
+    </script>
+    
+}
