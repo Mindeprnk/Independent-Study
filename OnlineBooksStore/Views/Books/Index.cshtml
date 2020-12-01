@@ -10,7 +10,7 @@
     @Html.ActionLink("New Book","New","Books",null,new { @class ="btn btn-primary"})
 </p>
 
-  <table class="table table-bordered table-hover">
+  <table id="books" class="table table-bordered table-hover">
     <thead>
         <tr>
             <th>Books</th>
@@ -34,7 +34,7 @@
     <script>
         $(document).ready(function () {
 
-            var table = $("#customers").DataTable(
+            var table = $("#books").DataTable(
                 {
                     ajax: {
                         url: "api/books",
@@ -48,12 +48,12 @@
                             }
                         },
                         {
-                            data: "name"
+                            data: "genre.name"
                         },
                         {
                             data: "id",
                             render: function (data) {
-                                return "<button class='btn-link js-delete' data-movie-id=" + data + ">Delete</button>";
+                                return "<button class='btn-link js-delete' data-book-id=" + data + ">Delete</button>";
                             }
                         }
                     ]

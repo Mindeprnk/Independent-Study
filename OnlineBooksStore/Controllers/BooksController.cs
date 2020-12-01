@@ -32,15 +32,7 @@ namespace OnlineBooksStore.Controllers
         }
 
 
-        //private IEnumerable<Book> GetBooks()
-        //{
-        //    return new List<Book>
-        //    {
-        //        new Book {Id=1,Name="Ramayan"},
-        //        new Book {Id=2,Name="Mahabaratham"}
-        //    };
-        //}
-
+      
             //GET: Books/Random
         public ActionResult Random()
         {
